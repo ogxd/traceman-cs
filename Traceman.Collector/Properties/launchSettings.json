@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Traceman.Collector": {
+      "commandName": "Project",
+      "commandLineArgs": "-p test"
+    }
+  }
+}

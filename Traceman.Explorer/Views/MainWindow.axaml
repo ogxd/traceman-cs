@@ -1,0 +1,27 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:curr="using:Traceman.Explorer"
+        xmlns:vm="using:Traceman.Explorer.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Traceman.Explorer.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Traceman.Explorer"
+		WindowStartupLocation="CenterScreen">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+	<Panel>
+
+		<ScrollViewer HorizontalScrollBarVisibility="Visible" Height="200">
+			<curr:DrawCanvas x:Name="canvas" Width="3000" Height="200" Background="White">
+
+			</curr:DrawCanvas>
+		</ScrollViewer>
+
+	</Panel>
+	
+</Window>
