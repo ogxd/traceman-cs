@@ -4,6 +4,7 @@ using Microsoft.Diagnostics.NETCore.Client;
 using Microsoft.Diagnostics.Symbols;
 using Microsoft.Diagnostics.Tracing;
 using Microsoft.Diagnostics.Tracing.Etlx;
+using Microsoft.Diagnostics.Tracing.Extensions;
 using Microsoft.Diagnostics.Tracing.Parsers.Clr;
 using Microsoft.Diagnostics.Tracing.Stacks;
 using System;
@@ -116,7 +117,7 @@ namespace Traceman.Collector
                 new EventPipeProvider("Microsoft-DotNETCore-SampleProfiler", (System.Diagnostics.Tracing.EventLevel)EventLevel.Informational)
             };
 
-            string output = Environment.ExpandEnvironmentVariables(@"%tmp%\\traceman_output.bin");
+            string output = Environment.ExpandEnvironmentVariables(@"%tmp%\\traceman_output3.bin");
 
             // collect a *short* trace with stack samples
             // the hidden '--duration' flag can increase the time of this trace in case 10ms
@@ -127,7 +128,7 @@ namespace Traceman.Collector
             using (FileStream fs = File.OpenWrite(output))
             {
                 Task copyTask = session.EventStream.CopyToAsync(fs);
-                await Task.Delay(5000);
+                await Task.Delay(1000);
                 session.Stop();
 
                 // check if rundown is taking more than 5 seconds and add comment to report
@@ -166,9 +167,6 @@ namespace Traceman.Collector
                     string template = "Thread (";
                     string threadFrame = stackSource.GetFrameName(stackSource.GetFrameIndex(stackIndex), false);
                     int threadId = int.Parse(threadFrame.Substring(template.Length, threadFrame.Length - (template.Length + 1)));
-
-                    //if (threadId != Debug.ThreadId)
-                    //    return;
 
                     if (samplesForThread.TryGetValue(threadId, out var samples))
                     {

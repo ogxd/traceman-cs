@@ -1,6 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:curr="using:Traceman.Explorer"
+        xmlns:curr="using:Traceman.Explorer.Views"
         xmlns:vm="using:Traceman.Explorer.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -16,10 +16,13 @@
 
 	<Panel>
 
-		<ScrollViewer HorizontalScrollBarVisibility="Visible" Height="200">
-			<curr:DrawCanvas x:Name="canvas" Width="3000" Height="200" Background="White">
+		<ScrollViewer HorizontalScrollBarVisibility="Visible"  VerticalScrollBarVisibility="Visible">
+			<!--<curr:DrawCanvas x:Name="canvas" Width="10000" Height="10000" Background="White">
 
-			</curr:DrawCanvas>
+			</curr:DrawCanvas>-->
+		    <curr:TreeViewPage>
+			
+		    </curr:TreeViewPage>
 		</ScrollViewer>
 
 	</Panel>

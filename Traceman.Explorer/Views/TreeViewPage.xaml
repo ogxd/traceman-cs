@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 x:Class="Traceman.Explorer.Views.TreeViewPage">
+	
+  <StackPanel Orientation="Vertical">
+    <TextBlock Classes="h1">Callstack per thread</TextBlock>
+
+    <StackPanel Orientation="Horizontal"
+              Margin="0,16,0,0"
+              HorizontalAlignment="Center">
+		
+      <TreeView Items="{Binding}">
+        <TreeView.ItemTemplate>
+          <TreeDataTemplate ItemsSource="{Binding Children}">
+            <TextBlock Text="{Binding Header}"/>
+          </TreeDataTemplate>
+        </TreeView.ItemTemplate>
+      </TreeView>
+    </StackPanel>
+  </StackPanel>
+</UserControl>
