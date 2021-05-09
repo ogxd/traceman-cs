@@ -82,16 +82,14 @@ namespace Traceman.Collector
             _cts.Cancel();
             _listener.Dispose();
 
-            /*
             var lz4Options = MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray);
             byte[] bytes = MessagePackSerializer.Serialize(_events, lz4Options);
 
-            string output = Environment.ExpandEnvironmentVariables(@"%tmp%\\traceman_output.bin");
+            string output = Environment.ExpandEnvironmentVariables(@"%tmp%\\traceman_output.trm");
 
             File.WriteAllBytes(output, bytes);
 
             Console.WriteLine($"Events written to '{output}'");
-            */
         }
 
         private static void PrintStack(int threadId, StackSourceSample stackSourceSample, StackSource stackSource)
@@ -140,53 +138,6 @@ namespace Traceman.Collector
                 }
                 await copyTask;
             }
-
-            // using the generated trace file, symbolocate and compute stacks.
-            string tempEtlxFilename = TraceLog.CreateFromEventPipeDataFile(output);
-            using (var symbolReader = new SymbolReader(System.IO.TextWriter.Null) { SymbolPath = SymbolPath.MicrosoftSymbolServerPath })
-            using (var eventLog = new TraceLog(tempEtlxFilename))
-            {
-                var stackSource = new MutableTraceEventStackSource(eventLog)
-                {
-                    OnlyManagedCodeStacks = true
-                };
-
-                var computer = new SampleProfilerThreadTimeComputer(eventLog, symbolReader);
-                computer.GenerateThreadTimeStacks(stackSource);
-
-                var samplesForThread = new Dictionary<int, List<StackSourceSample>>();
-
-                stackSource.ForEach((sample) =>
-                {
-                    var stackIndex = sample.StackIndex;
-                    while (!stackSource.GetFrameName(stackSource.GetFrameIndex(stackIndex), false).StartsWith("Thread ("))
-                        stackIndex = stackSource.GetCallerIndex(stackIndex);
-
-                    // long form for: int.Parse(threadFrame["Thread (".Length..^1)])
-                    // Thread id is in the frame name as "Thread (<ID>)"
-                    string template = "Thread (";
-                    string threadFrame = stackSource.GetFrameName(stackSource.GetFrameIndex(stackIndex), false);
-                    int threadId = int.Parse(threadFrame.Substring(template.Length, threadFrame.Length - (template.Length + 1)));
-
-                    if (samplesForThread.TryGetValue(threadId, out var samples))
-                    {
-                        samples.Add(sample);
-                    }
-                    else
-                    {
-                        samplesForThread[threadId] = new List<StackSourceSample>() { sample };
-                    }
-                });
-
-                // For every thread recorded in our trace, print the first stack
-                foreach (var (threadId, samples) in samplesForThread)
-                {
-#if DEBUG
-                    Console.WriteLine($"Found {samples.Count} stacks for thread {threadId}");
-#endif
-                    PrintStack(threadId, samples[0], stackSource);
-                }
-            }
         }
 
         static async Task RunOptions(Options options)
@@ -202,7 +153,7 @@ namespace Traceman.Collector
                 // Trigger some events
                 var task = Task.Run(() =>
                 {
-                    Debug.ConsumeMany(_cts.Token);
+                    return Debug.ConsumeMany(_cts.Token);
                 });
             } 
 
@@ -232,10 +183,10 @@ namespace Traceman.Collector
                 pid = process.Id;
             }
 
-            //_listener = new ClrEventListener(pid, Keywords.Exception, EventLevel.Error);
-            //_listener.Parser.AddCallbackForEvents<ExceptionTraceData>(EventPipeSessions_OnExceptionTraceData);
+            _listener = new ClrEventListener(pid, Keywords.Exception, EventLevel.Error);
+            _listener.Parser.AddCallbackForEvents<ExceptionTraceData>(EventPipeSessions_OnExceptionTraceData);
 
-            await Test(pid);
+            //await Test(pid);
         }
 
         private static void EventPipeSessions_OnExceptionTraceData(ExceptionTraceData obj)

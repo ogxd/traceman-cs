@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Traceman.Collector
 {
@@ -8,14 +9,14 @@ namespace Traceman.Collector
     {
         public static int ThreadId;
 
-        public static void ConsumeMany(CancellationToken token)
+        public static async Task ConsumeMany(CancellationToken token)
         {
             Console.WriteLine("THREAD ID = " + Thread.CurrentThread.ManagedThreadId);
             ThreadId = Thread.CurrentThread.ManagedThreadId;
             do
             {
                 Consume();
-                //await Task.Delay(1);
+                await Task.Delay(1);
             } while (!token.IsCancellationRequested);
         }
 
@@ -23,7 +24,7 @@ namespace Traceman.Collector
         {
             long i = 0;
             HashSet<string> list = new HashSet<string>();
-            for (int k = 0; k < 5000; k++)
+            for (int k = 0; k < 10; k++)
             {
                 list.Add($"hello world :) {k}");
                 try

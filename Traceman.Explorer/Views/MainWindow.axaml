@@ -16,13 +16,13 @@
 
 	<Panel>
 
-		<ScrollViewer HorizontalScrollBarVisibility="Visible"  VerticalScrollBarVisibility="Visible">
-			<!--<curr:DrawCanvas x:Name="canvas" Width="10000" Height="10000" Background="White">
+		<ScrollViewer HorizontalScrollBarVisibility="Visible" >
+			<curr:DrawCanvas x:Name="canvas" Width="10000" Height="NaN" Background="White">
 
-			</curr:DrawCanvas>-->
-		    <curr:TreeViewPage>
+			</curr:DrawCanvas>
+		    <!--<curr:TreeViewPage>
 			
-		    </curr:TreeViewPage>
+		    </curr:TreeViewPage>-->
 		</ScrollViewer>
 
 	</Panel>
